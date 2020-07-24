@@ -1,6 +1,6 @@
 [package]
 name = "adafruit_io_http"
-version = "0.0.31"
+version = "0.0.32"
 authors = ["dan"]
 edition = "2018"
 license = "MIT"
