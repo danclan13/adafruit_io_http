@@ -17,15 +17,17 @@ impl AdaClient {
         }
     }
 
-
     pub fn post(&mut self, n3:String, data:String){
         let ada_io_feedkey:String = n3;
-        let url:String = format!("https://io.adafruit.com/api/v2/{:}/feeds/{:}/data", 
+        let url:String = format!("https://io.adafruit.com/api/v2/{:}/feeds/{:}//data", 
         self.ada_io_username, ada_io_feedkey);
+        println!("Https request using uri: {:}",url);
+        let head:String = format!("X-AIO-Key: {:}", self.ada_io_key);
+        println!("Header: {:}", &head);
         Request::builder()
             .uri(url)
-            .header("X-AIO-Key: ", &(self.ada_io_key))
-            .body(data)
+            .header(&head, &data)
+            .body(())
             .unwrap();
     }
    
