@@ -28,6 +28,7 @@ fn main() {
         let feedkey = "YOUR_FEED";
         ada.post(feedkey.to_string(), data.to_string());
         thread::sleep(Duration::from_secs(5));
+
         let data_new = ada.get(feedkey.to_string());
         println!("{:}", data_new);
         thread::sleep(Duration::from_secs(5));
