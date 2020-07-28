@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use std::string::String;
 extern crate ureq;
 extern crate serde_json;
 
@@ -17,16 +18,16 @@ impl AdaClient {
     }
 
     pub fn post(&mut self, n3:String, data:String){
-        let ada_io_feedkey:String = n3;
+        let ada_io_feedkey = n3;
         ureq::post(&format!("https://io.adafruit.com/api/v2/{}/feeds/{}/data", self.ada_io_username, ada_io_feedkey))
-        .set("X-AIO-Key", format!("X-AIO-Key: {:}", self.ada_io_key))
+        .set("X-AIO-Key", &(format!("X-AIO-Key: {:}", self.ada_io_key)))
         .send_form(&[("value", &data)]);
     }
 
     pub fn get(&mut self, n3:String) -> String{
-        let ada_io_feedkey:String = n3;
+        let ada_io_feedkey = n3;
         let r = ureq::get(&format!("https://io.adafruit.com/api/v2/{}/feeds/{}/data?limit=1", self.ada_io_username, ada_io_feedkey))
-        .set("X-AIO-Key", format!("X-AIO-Key: {:}", self.ada_io_key))
+        .set("X-AIO-Key", &(format!("X-AIO-Key: {:}", self.ada_io_key)))
         .call();
         let json = r.into_json().unwrap();
         let result:String = json[0]["value"].as_str().unwrap().parse().unwrap();
