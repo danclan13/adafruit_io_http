@@ -1,8 +1,7 @@
 #![allow(dead_code)]
-extern crate http;
 
-use std::time::Duration; 
-use http::{Request, Response};
+extern crate ureq;
+extern crate serde_json;
 
 pub struct AdaClient {
     pub ada_io_username: String,
@@ -19,16 +18,19 @@ impl AdaClient {
 
     pub fn post(&mut self, n3:String, data:String){
         let ada_io_feedkey:String = n3;
-        let url:String = format!("https://io.adafruit.com/api/v2/{:}/feeds/{:}/data", 
-        self.ada_io_username, ada_io_feedkey);
-        println!("Https request using uri: {:}",url);
-        let head:String = format!("X-AIO-Key: {:}", self.ada_io_key);
-        println!("Header: {:}", head);
-        Request::builder()
-            .uri(url)
-            .header(&head, &data)
-            .body(())
-            .unwrap();
+        ureq::post(&format!("https://io.adafruit.com/api/v2/{}/feeds/{}/data", self.ada_io_username, ada_io_feedkey))
+        .set("X-AIO-Key", format!("X-AIO-Key: {:}", self.ada_io_key))
+        .send_form(&[("value", &data)]);
     }
+
+    pub fn get(&mut self, n3:String) -> String{
+        let ada_io_feedkey:String = n3;
+        let r = ureq::get(&format!("https://io.adafruit.com/api/v2/{}/feeds/{}/data?limit=1", self.ada_io_username, ada_io_feedkey))
+        .set("X-AIO-Key", format!("X-AIO-Key: {:}", self.ada_io_key))
+        .call();
+        let json = r.into_json().unwrap();
+        let result:String = json[0]["value"].as_str().unwrap().parse().unwrap();
+        result
+    }   
    
 }
